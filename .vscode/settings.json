@@ -1,0 +1,10 @@
+{
+    "go.gopath": "${workspaceRoot}",
+    "terminal.integrated.env.linux": {
+        "GOPATH": "${workspaceRoot}:${GOPATH}"
+    },
+    "files.exclude": {
+        "**/.git": false,
+        "**/.gopath": true
+    }
+}
