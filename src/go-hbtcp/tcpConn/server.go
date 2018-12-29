@@ -19,13 +19,15 @@ const (
 
 // HBConn represent the read/write handler of TCP connection.
 type HBConn struct {
-	Conn    *net.TCPConn
-	writer  *bufio.Writer
-	scanner *bufio.Scanner
+	Conn       *net.TCPConn
+	writer     *bufio.Writer
+	scanner    *bufio.Scanner
+	timeout    int
+	closeTimer *time.Timer
 }
 
 // NewHBConn return a new instance with giving TCP connection.
-func NewHBConn(conn *net.TCPConn) *HBConn {
+func NewHBConn(conn *net.TCPConn, timeout int) *HBConn {
 	if conn == nil {
 		pLogger.Error("nil pointer of TCPConn instance/n")
 		return nil
@@ -40,6 +42,7 @@ func NewHBConn(conn *net.TCPConn) *HBConn {
 		Conn:    conn,
 		writer:  writer,
 		scanner: scanner,
+		timeout: timeout,
 	}
 	return c
 }
@@ -50,9 +53,9 @@ func NewHBConn(conn *net.TCPConn) *HBConn {
 func (c *HBConn) Read() {
 	quitFlag := false
 	quitChan := make(chan bool, 1)
-	interval := time.NewTicker(10 * time.Millisecond)
-	timeout := time.NewTicker(5 * time.Second)
 	incomingChan := make(chan string)
+	interval := time.NewTicker(10 * time.Millisecond)
+	var closeTimer *time.Timer
 
 	go func() {
 		for c.scanner.Scan() {
@@ -70,14 +73,16 @@ func (c *HBConn) Read() {
 		}
 	}()
 
+	closeTimer = c.resetCloseTimer()
 readLoop:
 	for {
 		select {
-		case <-timeout.C:
+		case <-closeTimer.C:
 			pLogger.Info("CONN TIMEOUT\n")
 			quitFlag = true
 			break
 		case msg := <-incomingChan:
+			c.resetCloseTimer()
 			pLogger.Info("MSG: %s\n", msg)
 		default:
 		}
@@ -90,13 +95,36 @@ readLoop:
 		}
 	}
 
-	c.Conn.Close()
+	c.close()
+	interval.Stop()
 	<-quitChan
 	pLogger.Info("CONN CLOSE %s\n", c.Conn.RemoteAddr().String())
 }
 
-// StartHBServer resolve the address and start a TCP server
-func StartHBServer(address string) error {
+// resetCloseTimer reset the time and return the timer.
+// The timer will be create at first if not exists.
+func (c *HBConn) resetCloseTimer() *time.Timer {
+	duration := time.Duration(c.timeout) * time.Second
+	if c.closeTimer == nil {
+		pLogger.Info("CONN NEW TIMER %ds\n", c.timeout)
+		c.closeTimer = time.NewTimer(duration)
+	} else {
+		pLogger.Info("CONN RESET TIMER %ds\n", c.timeout)
+		c.closeTimer.Reset(duration)
+	}
+	return c.closeTimer
+}
+
+// close terminate the connection and stop the close timer if exists.
+func (c *HBConn) close() {
+	c.Conn.Close()
+	if c.closeTimer != nil {
+		c.closeTimer.Stop()
+	}
+}
+
+// StartHBServer resolve the address and start a TCP server.
+func StartHBServer(address string, timeout int) error {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		pLogger.Error("%v/n", err)
@@ -116,7 +144,7 @@ func StartHBServer(address string) error {
 			return err
 		}
 		pLogger.Info("CONN ESTABLISH %s\n", conn.RemoteAddr().String())
-		tcpConn := NewHBConn(conn)
+		tcpConn := NewHBConn(conn, timeout)
 		go tcpConn.Read()
 	}
 

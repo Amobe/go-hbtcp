@@ -20,7 +20,7 @@ func main() {
 func mainWithCode() int {
 	parseArgs()
 
-	tcpConn.StartHBServer(gProcConfig.ListenAddr)
+	tcpConn.StartHBServer(gProcConfig.ListenAddr, gProcConfig.ConnTimeout)
 
 	return 0
 }
