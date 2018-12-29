@@ -6,6 +6,7 @@ import (
 	"net"
 	"time"
 
+	"go-hbtcp/extConn"
 	"go-hbtcp/logger"
 )
 
@@ -83,7 +84,8 @@ readLoop:
 			break
 		case msg := <-incomingChan:
 			c.resetCloseTimer()
-			pLogger.Info("MSG: %s\n", msg)
+			pLogger.Info("TCP_I %s\n", msg)
+			extConn.ForwardMessage(msg)
 		default:
 		}
 		if quitFlag {
