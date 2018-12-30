@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"go-hbtcp/extConn"
 	"go-hbtcp/logger"
 	"go-hbtcp/tcpConn"
 )
@@ -20,6 +21,7 @@ func main() {
 func mainWithCode() int {
 	parseArgs()
 
+	extConn.Init()
 	tcpConn.StartHBServer(gProcConfig.ListenAddr, gProcConfig.ConnTimeout)
 
 	return 0

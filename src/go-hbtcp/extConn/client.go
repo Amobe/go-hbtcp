@@ -1,37 +1,34 @@
 package extConn
 
 import (
-	"go-hbtcp/logger"
-	"go-hbtcp/queue"
 	"time"
+
+	"go-hbtcp/logger"
 )
 
 var (
-	pLogger   = logger.GetLoggerInstance()
-	pJobQueue = queue.StartDispatcher()
+	pLogger       = logger.GetLoggerInstance()
+	pRequestQueue *RequestQueue
 )
 
-// MessageJob is an implementation of the job interface,
-// which can forward the message to the external API.
-type MessageJob struct {
-	ID      int
-	Message string
-}
-
-// Do forward the message to the external API
-// Do implement the Job.Do method
-func (mj *MessageJob) Do() {
-	pLogger.Info("JOB %d EXC %s\n", mj.ID, mj.Message)
-	send(mj.Message)
-}
-
 // send transmit the message to the external API.
-func send(msg string) {
-	pLogger.Info("EXT_O %s\n", msg)
-	time.Sleep(2 * time.Second)
+func send(job *RequestJob) {
+	pLogger.Info("EXT_O %s\n", job.Message)
+	// simulate the execution time of sending request
+	time.Sleep(100 * time.Millisecond)
+}
+
+// Init setup the global request queue and start it
+func Init() {
+	if pRequestQueue != nil {
+		pLogger.Warn("External Client was already initialized")
+		return
+	}
+	pRequestQueue = NewRequestQueue()
+	pRequestQueue.Start()
 }
 
 // ForwardMessage package the message become a MessageJob and insert into the queue.
 func ForwardMessage(msg string) {
-	pJobQueue.InsertJob(&MessageJob{0, msg})
+	pRequestQueue.Insert(&RequestJob{0, msg})
 }
