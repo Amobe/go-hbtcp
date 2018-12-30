@@ -1,0 +1,4 @@
+* Implement the handler of different command which receives from TCP connection.
+* Implement a mock tcp connection for testing the server
+* Use TLV package to instead the newline split
+* Add unique lable for each TCP client connection to identify the different client.
