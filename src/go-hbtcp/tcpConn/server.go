@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"net"
+	"strings"
 	"time"
 
 	"go-hbtcp/extConn"
@@ -15,7 +16,8 @@ var (
 )
 
 const (
-	readBufferSize int = 2048
+	readBufferSize int    = 2048
+	commandQuit    string = "quit"
 )
 
 // HBConn represent the read/write handler of TCP connection.
@@ -61,11 +63,12 @@ func (c *HBConn) Read() {
 	go func() {
 		for c.scanner.Scan() {
 			msg := c.scanner.Text()
-			if len(msg) != 0 {
-				incomingChan <- msg
+			if len(msg) == 0 {
+				continue
 			}
-			if msg == "quit" {
-				break
+			incomingChan <- msg
+			if isCommandQuit(msg) {
+				return
 			}
 		}
 		err := c.scanner.Err()
@@ -85,6 +88,10 @@ readLoop:
 		case msg := <-incomingChan:
 			c.resetCloseTimer()
 			pLogger.Info("TCP_I %s\n", msg)
+			if isCommandQuit(msg) {
+				quitFlag = true
+				break
+			}
 			extConn.ForwardMessage(msg)
 		default:
 		}
@@ -115,6 +122,11 @@ func (c *HBConn) resetCloseTimer() *time.Timer {
 		c.closeTimer.Reset(duration)
 	}
 	return c.closeTimer
+}
+
+// isCommandQuit return the result by determining the 'quit' command
+func isCommandQuit(cmd string) bool {
+	return strings.ToLower(cmd) == commandQuit
 }
 
 // close terminate the connection and stop the close timer if exists.
