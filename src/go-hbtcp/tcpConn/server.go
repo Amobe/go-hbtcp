@@ -110,6 +110,13 @@ readLoop:
 	pLogger.Info("CONN CLOSE %s\n", c.Conn.RemoteAddr().String())
 }
 
+// Write put the message into output buffer
+func (c *HBConn) Write(msg string) {
+	pLogger.Info("TCP_O %s\n", msg)
+	c.writer.Write([]byte(msg))
+	c.writer.Flush()
+}
+
 // resetCloseTimer reset the time and return the timer.
 // The timer will be create at first if not exists.
 func (c *HBConn) resetCloseTimer() *time.Timer {
@@ -142,11 +149,13 @@ func StartHBServer(address string, timeout int) error {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", address)
 	if err != nil {
 		pLogger.Error("%v/n", err)
+		return err
 	}
 
 	tcpListener, err := net.ListenTCP("tcp", tcpAddr)
 	if err != nil {
 		pLogger.Error("%v/n", err)
+		return err
 	}
 	defer tcpListener.Close()
 	pLogger.Info("START LISTEN %s\n", address)

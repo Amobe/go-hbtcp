@@ -1,6 +1,7 @@
 PACKAGE = go-hbtcp
 ROOT_DIR = $(shell pwd)
 SERVER_BINARY = server
+CLIENT_BINARY = client
 
 GO = go
 GOBIN ?= .
@@ -14,14 +15,18 @@ LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.Revision=$(COMMIT) -X main.
 
 all: build
 
-build: build_server
+build: build_server build_client
 
 build_server:
 	$(GO) build $(LDFLAGS) -o $(GOBIN)/$(SERVER_BINARY) $(PACKAGE)/cmd/$(SERVER_BINARY)
 
+build_client:
+	$(GO) build $(LDFLAGS) -o $(GOBIN)/$(CLIENT_BINARY) $(PACKAGE)/cmd/$(CLIENT_BINARY)
+
 clean:
 	if [ -f $(CLIENT_BINARY) ] ; then rm $(CLIENT_BINARY) ; fi
 	if [ -f $(SERVER_BINARY) ] ; then rm $(SERVER_BINARY) ; fi
+	if [ -f $(CLIENT_BINARY) ] ; then rm $(CLIENT_BINARY) ; fi
 
 mod:
 	$(GO) mod init

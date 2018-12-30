@@ -15,7 +15,7 @@ var (
 func send(job *RequestJob) {
 	pLogger.Info("EXT_O %s\n", job.Message)
 	// simulate the execution time of sending request
-	time.Sleep(100 * time.Millisecond)
+	time.Sleep(20 * time.Millisecond)
 }
 
 // Init setup the global request queue and start it
