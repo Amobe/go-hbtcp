@@ -1,6 +1,8 @@
 package queue
 
 import (
+	"errors"
+
 	"go-hbtcp/logger"
 )
 
@@ -22,7 +24,7 @@ type Queue interface {
 	Start()
 	Stop()
 	Handler()
-	Insert(j Job)
+	Insert(j Job) error
 }
 
 // JobQueue represent a queue which can executes the jobs one by one.
@@ -68,16 +70,17 @@ func (jq *JobQueue) Handler() {
 }
 
 // Insert append the job to the end of the queue.
-func (jq *JobQueue) Insert(j Job) {
+func (jq *JobQueue) Insert(j Job) error {
 	if jq.isStop {
-		pLogger.Warn("JobQueue cannot insert job into a stoped queue")
-		return
+		pLogger.Warn("JobQueue cannot insert job into a stopped queue")
+		return errors.New("cannot insert job into a stopped queue")
 	}
 	if j == nil {
 		pLogger.Error("JobQueue cannot insert a nil job")
-		return
+		return errors.New("cannot insert nil job into a queue")
 	}
 	jq.queue <- j
+	return nil
 }
 
 // GetQueue return the job channel.
