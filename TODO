@@ -2,3 +2,4 @@
 * Implement a mock tcp connection for testing the server
 * Use TLV package to instead the newline split
 * Add unique lable for each TCP client connection to identify the different client.
+* Add more statistic for moniting the process

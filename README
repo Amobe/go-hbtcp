@@ -9,10 +9,11 @@ To run the test with make.
 After compiling the code, make will place the executable binary into the 'bin' folder.
     $ cd ./bin
 To execute the server
-    $ ./server -l 127.0.0.1:20000 -t 30
+    $ ./server -l 127.0.0.1:20000 -t 30 -a 127.0.0.1:20001
     Arguments:
         -l: listening address of TCP server
         -t: close the connection if there is no incoming message over this time in second
+        -a: listening address of HTTP admin server
 To execute the benchmark test client
     $ ./client -d 127.0.0.1:20000 -a 2
     Arguments:

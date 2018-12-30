@@ -7,12 +7,14 @@ import (
 	"strings"
 	"time"
 
+	"go-hbtcp/admin"
 	"go-hbtcp/extConn"
 	"go-hbtcp/logger"
 )
 
 var (
 	pLogger = logger.GetLoggerInstance()
+	pStats  = admin.GetProcStatsInstance()
 )
 
 const (
@@ -66,6 +68,7 @@ func (c *HBConn) Read() {
 			if len(msg) == 0 {
 				continue
 			}
+			pStats.IncServerInPktAcc()
 			incomingChan <- msg
 			if isCommandQuit(msg) {
 				return
@@ -108,6 +111,7 @@ readLoop:
 	interval.Stop()
 	<-quitChan
 	pLogger.Info("CONN CLOSE %s\n", c.Conn.RemoteAddr().String())
+	pStats.DecClientConn()
 }
 
 // Write put the message into output buffer
@@ -167,6 +171,7 @@ func StartHBServer(address string, timeout int) error {
 			return err
 		}
 		pLogger.Info("CONN ESTABLISH %s\n", conn.RemoteAddr().String())
+		pStats.IncClientConn()
 		tcpConn := NewHBConn(conn, timeout)
 		go tcpConn.Read()
 	}

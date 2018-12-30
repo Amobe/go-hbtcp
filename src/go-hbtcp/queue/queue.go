@@ -2,16 +2,18 @@ package queue
 
 import (
 	"errors"
+	"go-hbtcp/admin"
 
 	"go-hbtcp/logger"
 )
 
 var (
 	pLogger = logger.GetLoggerInstance()
+	pStats  = admin.GetProcStatsInstance()
 )
 
 const (
-	queueSize int = 1000
+	QueueSize int = 1000
 )
 
 // Job represent a job which can be put into the queue.
@@ -37,7 +39,7 @@ type JobQueue struct {
 // NewJobQueue create a job queue instance and return it.
 func NewJobQueue() *JobQueue {
 	queue := &JobQueue{
-		make(chan Job, queueSize),
+		make(chan Job, QueueSize),
 		make(chan bool, 1),
 		false,
 	}

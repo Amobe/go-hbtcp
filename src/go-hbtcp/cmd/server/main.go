@@ -1,6 +1,7 @@
 package main
 
 import (
+	"go-hbtcp/admin"
 	"os"
 
 	"go-hbtcp/extConn"
@@ -9,8 +10,8 @@ import (
 )
 
 var (
-	pStats  Stats
 	pLogger = logger.GetLoggerInstance()
+	pStats  = admin.GetProcStatsInstance()
 )
 
 func main() {
@@ -20,6 +21,9 @@ func main() {
 
 func mainWithCode() int {
 	parseArgs()
+
+	admin := admin.NewAdminServer(gProcConfig.AdminAddr, pStats)
+	go admin.Start()
 
 	extConn.Init()
 	tcpConn.StartHBServer(gProcConfig.ListenAddr, gProcConfig.ConnTimeout)
