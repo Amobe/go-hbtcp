@@ -61,10 +61,14 @@ func (jq *JobQueue) Handler() {
 	for {
 		select {
 		case <-jq.stopChan:
-			pLogger.Info("JobQueue STOP")
+			pLogger.Info("JobQueue STOP, leave %d jobs", len(jq.queue))
 			return
-		case job := <-jq.queue:
-			job.Do()
+		case job, ok := <-jq.queue:
+			if !ok {
+				jq.queue = nil
+			} else {
+				job.Do()
+			}
 		}
 	}
 }
