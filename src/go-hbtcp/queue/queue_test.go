@@ -41,9 +41,9 @@ func TestNewJobQueue(t *testing.T) {
 	if len(queue) > 0 {
 		t.Errorf("jobQueue.queue is not empty, len: %d", len(queue))
 	}
-	if cap(queue) != queueSize {
+	if cap(queue) != QueueSize {
 		t.Errorf("jobQueue.queue capability is not current, expect cap: %d, actaul cap: %d",
-			queueSize, cap(jobQueue.queue))
+			QueueSize, cap(jobQueue.queue))
 	}
 	if jobQueue.stopChan == nil {
 		t.Fatalf("jobQueue.stopChan is nil, initialize fail")
