@@ -22,3 +22,6 @@ To execute the benchmark test client
 
 The way to test the server with netcat
     $ echo -e "HELLO\n1\n2\n3\n4\n5\n6\n7\nquit" | nc 127.0.0.1 20000
+
+To monitor the statistic of the project.
+    Input the following url into browser http://127.0.0.1:20001/stat
