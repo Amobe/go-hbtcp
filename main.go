@@ -1,12 +1,12 @@
 package main
 
 import (
-	"go-hbtcp/admin"
 	"os"
 
-	"go-hbtcp/extConn"
-	"go-hbtcp/logger"
-	"go-hbtcp/tcpConn"
+	"github.com/amobe/go-hbtcp/admin"
+	"github.com/amobe/go-hbtcp/extConn"
+	"github.com/amobe/go-hbtcp/logger"
+	"github.com/amobe/go-hbtcp/tcpConn"
 )
 
 var (

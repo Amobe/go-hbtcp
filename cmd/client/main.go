@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go-hbtcp/logger"
-	"go-hbtcp/tcpConn"
+	"github.com/amobe/go-hbtcp/logger"
+	"github.com/amobe/go-hbtcp/tcpConn"
 )
 
 var (

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"go-hbtcp/admin"
-	"go-hbtcp/extConn"
-	"go-hbtcp/logger"
+	"github.com/amobe/go-hbtcp/admin"
+	"github.com/amobe/go-hbtcp/extConn"
+	"github.com/amobe/go-hbtcp/logger"
 )
 
 var (
