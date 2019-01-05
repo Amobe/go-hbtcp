@@ -3,9 +3,9 @@ package extConn
 import (
 	"time"
 
-	"go-hbtcp/admin"
-	"go-hbtcp/logger"
-	"go-hbtcp/queue"
+	"github.com/amobe/go-hbtcp/admin"
+	"github.com/amobe/go-hbtcp/logger"
+	"github.com/amobe/go-hbtcp/queue"
 )
 
 var (

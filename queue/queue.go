@@ -2,9 +2,9 @@ package queue
 
 import (
 	"errors"
-	"go-hbtcp/admin"
 
-	"go-hbtcp/logger"
+	"github.com/amobe/go-hbtcp/admin"
+	"github.com/amobe/go-hbtcp/logger"
 )
 
 var (

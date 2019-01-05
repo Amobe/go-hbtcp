@@ -3,7 +3,7 @@ package extConn
 import (
 	"time"
 
-	"go-hbtcp/queue"
+	"github.com/amobe/go-hbtcp/queue"
 )
 
 const (
