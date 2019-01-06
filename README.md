@@ -36,6 +36,20 @@ By default, go-hbtcp starts a TCP server at local port 20000. And, you can open 
 --timeout value, -t value	Timeout second for keep hanging client alive (default: 30)
 ```
 
+### Statistics Server
+
+You can open the web browser to see the statistics data with local port 20001. The server will return the data with Json format.
+
+```
+{
+  "clientOnlineConn":0,		// display how many client connection on the server
+  "serverInPktAcc":0,		// display the total number of the incoming packages 
+  "serverOutPktAcc":0,		// display the total number of the outgoing packages
+  "reguestQueueSize":1000,	// the size of queue to handle the outgoing packages
+  "reguestQueuePadding":0	// the number of the elements which are waiting to transmit in queue
+ }
+```
+
 ## Test
 
 ### General Test
